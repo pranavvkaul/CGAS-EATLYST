@@ -1,0 +1,691 @@
+
+<!--
+Suggest a Food Page Landing Page
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Eatlyst</title>
+  <link rel="icon" type="image/png" href="chatbot-logo.png" />
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --accent: #d9f7e6;
+    --muted: rgba(255,255,255,0.85);
+    --overlay-dark: 0.85;
+    --card-max-width: 1400px;
+    --card-radius: 12px;
+    --accent-pink: #f6bcbc;
+    --pill-pink: #f7c9c6;
+    --pill-text: #111;
+    --dot-orb: #f59f5f;
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:"Montserrat",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    background:#222;
+    color:#fff;
+  }
+
+  .container {
+    position:relative;
+    min-height:100vh;
+    width:100vw;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-image:url('background.jpg');
+    background-size:cover;
+    background-position:center;
+    overflow:hidden;
+  }
+  .container::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,var(--overlay-dark));
+    z-index:0;
+  }
+
+  .back-btn, .home-btn {
+    position:absolute;
+    top:18px;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.4);
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    font-weight:700;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    z-index:20;
+    border:2px solid rgba(0,0,0,0.85);
+    transition:transform .12s ease,background .12s ease;
+  }
+  .back-btn:hover, .home-btn:hover {
+    transform:translateY(-2px);
+    background:rgba(0,0,0,0.6);
+  }
+  .back-btn .arrow, .home-btn .arrow { font-size:18px; line-height:1; }
+  .back-btn { left:18px; }
+  .back-btn .arrow { transform:translateX(-1px); }
+  .home-btn { right:18px; }
+  .home-btn .arrow { transform:translateX(1px); }
+
+  .panel {
+    position:relative;
+    z-index:1;
+    width:calc(100% - 60px);
+    max-width:1650px;
+    background:rgba(0,0,0,0.55);
+    border-radius:var(--card-radius);
+    box-shadow:0 8px 40px rgba(0,0,0,0.65);
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    margin:12px auto 20px;
+    min-height:calc(100vh - 80px);
+  }
+
+  .panel-head {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:18px;
+    padding:16px 48px;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    background:linear-gradient(rgba(0,0,0,0.12),rgba(0,0,0,0));
+  }
+
+  .title {
+    font-family:"Cinzel", Georgia, serif;
+    font-size:72px;
+    color:var(--accent);
+    margin:0;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    line-height:1;
+    transform:translateY(-6px);
+    flex: 0 0 auto;
+  }
+
+  .header-right {
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    z-index:5;
+  }
+
+  .recipe-pill {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 28px;
+    border-radius:999px;
+    background:linear-gradient(180deg,var(--pill-pink),#f3bfbf);
+    color:var(--pill-text);
+    font-weight:700;
+    text-decoration:none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 -2px 0 rgba(255,255,255,0.06);
+    border: 1px solid rgba(0,0,0,0.12);
+    font-size:15px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .recipe-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.5);
+  }
+
+  .recipe-dot {
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    display:inline-grid;
+    place-items:center;
+    background:rgba(0,0,0,0.35);
+    border:2px solid rgba(255,160,80,0.08);
+    box-shadow:0 6px 16px rgba(0,0,0,0.45);
+    cursor:pointer;
+    transition: transform .12s ease, background .12s ease;
+    text-decoration:none;
+    color:inherit;
+  }
+  .recipe-dot:hover { transform: translateY(-2px); background:rgba(0,0,0,0.5); }
+
+  .recipe-dot .inner {
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background: transparent;
+    box-shadow: inset 0 0 0 4px rgba(0,0,0,0.15), 0 0 0 6px rgba(245,159,95,0.07);
+    position:relative;
+  }
+  .recipe-dot .dot-core {
+    position:absolute;
+    inset:4px;
+    border-radius:50%;
+    background:var(--dot-orb);
+  }
+
+  .panel-body {
+    display:flex;
+    gap:36px;
+    align-items:flex-start;
+    padding:36px 60px;
+    box-sizing:border-box;
+    overflow:auto;
+  }
+
+  .left {
+    flex:1;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+  }
+
+  .note {
+    color:rgba(255,255,255,0.75);
+    font-size:14px;
+    margin-bottom:16px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 90px 90px;
+    gap: 14px 18px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+
+  .label {
+    font-weight:600;
+    color:#eaeaea;
+    font-size:15px;
+    transform: translateY(6px);
+  }
+  .minmax {
+    color:rgba(255,255,255,0.65);
+    font-size:13px;
+    text-align:center;
+    transform: translateY(6px);
+  }
+
+  .input {
+    height:48px;
+    width:100%;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.06);
+    color:#fff;
+    padding:10px 12px;
+    font-size:16px;
+    box-sizing:border-box;
+    text-align:center;
+    outline:none;
+    transition: all 0.2s ease;
+  }
+
+  .input:focus{
+    box-shadow:0 0 0 3px rgba(217,247,230,0.12);
+    border-color:rgba(217,247,230,0.3);
+    background:rgba(255,255,255,0.1);
+  }
+
+  .run-btn {
+    display:inline-block;
+    margin-top:12px;
+    background:var(--accent);
+    color:#111;
+    padding:10px 28px;
+    border-radius:6px;
+    font-weight:700;
+    cursor:pointer;
+    border:none;
+  }
+
+  .right {
+    width:45%;
+    min-width:340px;
+    transition:all .36s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .right.hidden {
+    opacity:0;
+    transform:translateY(8px) scale(.995);
+    pointer-events:none;
+  }
+
+  .results-card {
+    background:rgba(255,255,255,0.06);
+    border-radius:8px;
+    padding:16px;
+    min-height:200px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02),0 8px 30px rgba(0,0,0,0.6);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .results-controls {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .small-btn {
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.08);
+    padding:6px 10px;
+    border-radius:6px;
+    color:var(--accent);
+    font-weight:700;
+    cursor:pointer;
+  }
+  .small-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,0.02); }
+
+  .results-list {
+    max-height:60vh;
+    overflow:auto;
+    padding-right:6px;
+    background:transparent;
+  }
+
+  .json-pre {
+    white-space:pre-wrap;
+    word-break:break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+    font-size:13px;
+    color:#e7f6ee;
+    line-height:1.4;
+    background: rgba(0,0,0,0.25);
+    padding:12px;
+    border-radius:6px;
+  }
+
+  .result {
+    padding:10px 12px;
+    border-radius:6px;
+    margin-bottom:10px;
+    background:linear-gradient(180deg,rgba(0,0,0,0.28),rgba(255,255,255,0.02));
+  }
+
+  .dish-name {
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+
+  .stats {
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.4;
+  }
+
+  .source a {
+    font-size:12px;
+    color:rgba(255,255,255,0.8);
+    text-decoration:underline;
+  }
+
+  .see-more {
+    background:var(--accent-pink);
+    color:#111;
+    border-radius:6px;
+    padding:8px 14px;
+    border:none;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+  }
+
+  .no-result {
+    text-align:center;
+    color:rgba(255,255,255,0.65);
+    padding:28px 8px;
+  }
+
+  @media (max-width:1100px){
+    .panel { width:calc(100% - 40px); }
+    .panel-body { flex-direction:column; padding:28px 24px; gap:20px; }
+    .right { width:100%; min-width:unset; }
+    .title { font-size:48px; transform: translateY(-4px); }
+    .panel-head { padding:12px 20px; gap:10px; }
+    .back-btn, .home-btn { top:10px; width:40px; height:40px; }
+    .back-btn { left:10px; }
+    .home-btn { right:10px; }
+    .header-right { margin-left: 12px; gap:8px; }
+    .recipe-pill { padding:8px 18px; font-size:14px; }
+    .recipe-dot { width:36px; height:36px; }
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <a class="back-btn" href="home.html" aria-label="Go back">
+      <span class="arrow">←</span>
+    </a>
+
+    <a class="home-btn" href="index.html" aria-label="Go to home">
+      <span class="arrow">→</span>
+    </a>
+
+    <div class="panel" role="application" aria-labelledby="title">
+      <div class="panel-head" role="banner">
+        <h1 id="title" class="title">SUGGEST A FOOD !!</h1>
+
+        <div class="header-right" role="navigation" aria-label="Recipe of the day">
+          <a class="recipe-pill" href="home.html" aria-label="Open recipe of the day">
+            RECIPE OF THE DAY
+          </a>
+
+          <a class="recipe-dot" href="#" id="showDataDot" aria-label="Show Nutrition Database (JSON)">
+            <span class="inner"><span class="dot-core"></span></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="panel-body" role="region" aria-label="filters and results">
+        <div class="left" aria-hidden="false">
+          <div class="note">Enter ranges per 100g, leave blank to ignore a field</div>
+
+          <div class="form-grid" aria-label="filters">
+            
+            <div class="label">Enter Carbohydrate Range</div><div class="minmax">Min</div><div class="minmax">Max</div>
+            <div class="label"></div>
+            <input id="carbMin" class="input" placeholder="e.g. 0" type="number" min="0" step="any">
+            <input id="carbMax" class="input" placeholder="e.g. 62" type="number" min="0" step="any">
+
+            <div class="label">Enter Protein Range</div><div class="minmax">Min</div><div class="minmax">Max</div>
+            <div class="label"></div>
+            <input id="protMin" class="input" placeholder="e.g. 0" type="number" min="0" step="any">
+            <input id="protMax" class="input" placeholder="e.g. 25" type="number" min="0" step="any">
+
+            <div class="label">Enter Fat Range</div><div class="minmax">Min</div><div class="minmax">Max</div>
+            <div class="label"></div>
+            <input id="fatMin" class="input" placeholder="e.g. 0" type="number" min="0" step="any">
+            <input id="fatMax" class="input" placeholder="e.g. 41" type="number" min="0" step="any">
+
+            <div class="label">Enter Calorie Range</div><div class="minmax">Min</div><div class="minmax">Max</div>
+            <div class="label"></div>
+            <input id="calMin" class="input" placeholder="e.g. 19" type="number" min="0" step="any">
+            <input id="calMax" class="input" placeholder="e.g. 584" type="number" min="0" step="any">
+          </div>
+
+          <button id="runBtn" class="run-btn">RUN</button>
+          <div id="status" class="note" aria-live="polite"></div>
+        </div>
+
+        <div class="right hidden" id="rightPane" aria-hidden="true">
+          <div class="results-card" id="resultsCard" aria-live="polite">
+            <div class="results-controls" id="resultsControls" style="display:none">
+              <div style="font-weight:800;color:var(--accent)" id="resultsTitle">Matches</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button id="copyJsonBtn" class="small-btn" title="Copy JSON to clipboard" style="display:none">Copy</button>
+                <button id="downloadJsonBtn" class="small-btn" title="Download JSON" style="display:none">Download</button>
+                <button id="closeRight" class="small-btn" title="Close">Close</button>
+              </div>
+            </div>
+
+            <div id="resultsList" class="results-list">
+              <div class="no-result" id="noResult">Set your ranges and press RUN to see suggestions.</div>
+            </div>
+
+            <div class="see-more-wrap" id="seeMoreWrap" style="display:none">
+              <button id="seeMoreBtn" class="see-more">SEE MORE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const DATA_URL = 'nutritiondata.json';
+
+function toNum(v){
+  if(v === null || v === undefined || v === '') return NaN;
+  if(typeof v === 'number') return v;
+  return Number(String(v).replace(/,/g, '').trim());
+}
+
+function readFilters(){
+  return {
+    calMin: toNum(document.getElementById('calMin').value),
+    calMax: toNum(document.getElementById('calMax').value),
+    protMin: toNum(document.getElementById('protMin').value),
+    protMax: toNum(document.getElementById('protMax').value),
+    fatMin: toNum(document.getElementById('fatMin').value),
+    fatMax: toNum(document.getElementById('fatMax').value),
+    carbMin: toNum(document.getElementById('carbMin').value),
+    carbMax: toNum(document.getElementById('carbMax').value),
+  };
+}
+
+function inRange(val, min, max){
+  if(isNaN(val)) return false;
+  if(!isNaN(min) && val < min) return false;
+  if(!isNaN(max) && val > max) return false;
+  return true;
+}
+
+function itemMatches(item, f){
+  const cal = toNum(item['Calorie_per_100g'] ?? item['Calories'] ?? item['Calorie']);
+  const prot = toNum(item['Protein_per_100g'] ?? item['Protein']);
+  const fat = toNum(item['Fat_per_100g'] ?? item['Fat']);
+  const carb = toNum(item['Carbohydrate_per_100g'] ?? item['Carbohydrate']);
+
+  const calorieOk = (isNaN(f.calMin) && isNaN(f.calMax)) ? true : inRange(cal, f.calMin, f.calMax);
+  const proteinOk = (isNaN(f.protMin) && isNaN(f.protMax)) ? true : inRange(prot, f.protMin, f.protMax);
+  const fatOk     = (isNaN(f.fatMin) && isNaN(f.fatMax)) ? true : inRange(fat, f.fatMin, f.fatMax);
+  const carbOk    = (isNaN(f.carbMin) && isNaN(f.carbMax)) ? true : inRange(carb, f.carbMin, f.carbMax);
+
+  return calorieOk && proteinOk && fatOk && carbOk;
+}
+
+function makeResultEl(item){
+  const r = document.createElement('div');
+  r.className = 'result';
+
+  const name = document.createElement('div');
+  name.className = 'dish-name';
+  name.textContent = item['Dish'] || item['Name'] || item['Recipe_Name'] || 'Unknown';
+
+  const carbs = toNum(item['Carbohydrate_per_100g'] ?? item['Carbohydrate']);
+  const prot  = toNum(item['Protein_per_100g'] ?? item['Protein']);
+  const fat   = toNum(item['Fat_per_100g'] ?? item['Fat']);
+  const cal   = toNum(item['Calorie_per_100g'] ?? item['Calories'] ?? item['Calorie']);
+
+  const stat = document.createElement('div');
+  stat.className = 'stats';
+  stat.innerHTML = `Carbs: ${isNaN(carbs)?'—':carbs} &nbsp;&nbsp; Protein: ${isNaN(prot)?'—':prot} &nbsp;&nbsp; Fat: ${isNaN(fat)?'—':fat} &nbsp;&nbsp; Cal: ${isNaN(cal)?'—':cal}`;
+
+  r.appendChild(name);
+  r.appendChild(stat);
+
+  if(item['Source'] || item['Recipe_URL']){
+    const src = document.createElement('div');
+    src.className = 'source';
+    const a = document.createElement('a');
+    a.href = item['Source'] || item['Recipe_URL'];
+    a.textContent = 'Source';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    src.appendChild(a);
+    r.appendChild(src);
+  }
+
+  return r;
+}
+
+function renderResults(matches){
+  const right = document.getElementById('rightPane');
+  const list = document.getElementById('resultsList');
+  const count = document.getElementById('matchCount');
+  const seeWrap = document.getElementById('seeMoreWrap');
+  const noRes = document.getElementById('noResult');
+
+  list.innerHTML = '';
+  if(!matches || matches.length === 0){
+  list.innerHTML = '';
+  const msg = document.createElement('div');
+  msg.className = 'no-result';
+  msg.textContent = 'No dishes match your selected nutrition range. Try adjusting the values and RUN again.';
+  list.appendChild(msg);
+
+  document.getElementById('resultsControls').style.display = 'none';
+  seeWrap.style.display = 'none';
+  right.classList.remove('hidden');
+  right.setAttribute('aria-hidden','false');
+  return;
+}
+
+
+  const toShow = 3;
+  matches.slice(0, toShow).forEach(it => list.appendChild(makeResultEl(it)));
+
+  if(matches.length > toShow){
+    const moreInfo = document.createElement('div');
+    moreInfo.style.marginTop = '8px';
+    moreInfo.style.color = 'rgba(255,255,255,0.75)';
+    moreInfo.style.fontSize = '13px';
+    moreInfo.textContent = `Showing ${toShow} of ${matches.length} results. Click SEE MORE to view all.`;
+    list.appendChild(moreInfo);
+    seeWrap.style.display = 'flex';
+
+    const seeBtn = document.getElementById('seeMoreBtn');
+    seeBtn.onclick = () => {
+      list.innerHTML = '';
+      matches.forEach(it => list.appendChild(makeResultEl(it)));
+      list.scrollTop = 0;
+      seeWrap.style.display = 'none';
+    };
+  } else {
+    seeWrap.style.display = 'none';
+  }
+
+  document.getElementById('resultsControls').style.display = 'flex';
+  document.getElementById('resultsTitle').textContent = `Matches (${matches.length})`;
+  document.getElementById('copyJsonBtn').style.display = 'none';
+  document.getElementById('downloadJsonBtn').style.display = 'none';
+
+  right.classList.remove('hidden');
+  right.setAttribute('aria-hidden', 'false');
+}
+
+function showNutritionJsonView(data){
+  const right = document.getElementById('rightPane');
+  const list = document.getElementById('resultsList');
+  const controls = document.getElementById('resultsControls');
+  const copyBtn = document.getElementById('copyJsonBtn');
+  const dlBtn = document.getElementById('downloadJsonBtn');
+  const title = document.getElementById('resultsTitle');
+
+  const pretty = JSON.stringify(data, null, 2);
+
+  list.innerHTML = '';
+  const pre = document.createElement('pre');
+  pre.className = 'json-pre';
+  pre.textContent = pretty;
+  list.appendChild(pre);
+
+  controls.style.display = 'flex';
+  title.textContent = `Nutrition Database (JSON) — ${Array.isArray(data) ? data.length + ' items' : 'object'}`;
+
+  copyBtn.style.display = 'inline-block';
+  copyBtn.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(pre.textContent);
+      copyBtn.textContent = 'Copied';
+      setTimeout(()=>copyBtn.textContent = 'Copy', 1200);
+    } catch(e){
+      console.error(e);
+      copyBtn.textContent = 'Copy failed';
+      setTimeout(()=>copyBtn.textContent = 'Copy', 1200);
+    }
+  };
+
+  dlBtn.style.display = 'inline-block';
+  dlBtn.onclick = () => {
+    const blob = new Blob([pretty], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nutritiondata.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  right.classList.remove('hidden');
+  right.setAttribute('aria-hidden', 'false');
+}
+
+let DATA = [];
+let DATA_LOADED = false;
+async function loadData(){
+  try{
+    const res = await fetch(DATA_URL, {cache:'no-store'});
+    if(!res.ok) throw new Error('Failed to load');
+    DATA = await res.json();
+    if(!Array.isArray(DATA)) DATA = Object.values(DATA || {});
+    DATA_LOADED = true;
+    document.getElementById('status').textContent = ` ${Array.isArray(DATA) ? DATA.length : Object.keys(DATA).length} nutrition items`;
+    setTimeout(()=>{ document.getElementById('status').textContent = ''; }, 3500);
+  }catch(e){
+    console.error(e);
+    document.getElementById('status').textContent = 'Error loading nutritiondata.json — open developer console.';
+    DATA = [];
+    DATA_LOADED = false;
+  }
+}
+
+document.getElementById('showDataDot').addEventListener('click', async (ev)=>{
+  ev.preventDefault();
+  if(!DATA_LOADED){
+    document.getElementById('status').textContent = 'Loading nutrition data...';
+    await loadData();
+    document.getElementById('status').textContent = '';
+  }
+  showNutritionJsonView(DATA);
+});
+
+document.getElementById('closeRight').addEventListener('click', (ev)=>{
+  ev.preventDefault();
+  const right = document.getElementById('rightPane');
+  right.classList.add('hidden');
+  right.setAttribute('aria-hidden', 'true');
+  document.getElementById('resultsControls').style.display = 'none';
+});
+
+document.getElementById('runBtn').addEventListener('click', ()=>{
+  document.getElementById('status').textContent = '';
+  const f = readFilters();
+  if([f.calMin,f.calMax,f.protMin,f.protMax,f.fatMin,f.fatMax,f.carbMin,f.carbMax].every(Number.isNaN)){
+    document.getElementById('status').textContent = 'Please enter at least one range value to filter results.';
+    return;
+  }
+  const matches = DATA.filter(item => itemMatches(item, f));
+  renderResults(matches);
+});
+loadData();
+</script>
+</body>
+</html>

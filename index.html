@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eatlyst</title>
+  <link rel="icon" type="image/png" href="chatbot-logo.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #d9f7e6;
+      --muted: rgba(255,255,255,0.85);
+      --panel-bg: rgba(0,0,0,0.48);
+      --glass: rgba(255,255,255,0.06);
+--chat-bg: rgba(0, 0, 0, 0.934);    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: #111;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .bg {
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      filter: saturate(.9) contrast(.86);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .card {
+      width: calc(100% - 80px);
+      max-width: 1650px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      padding: 60px 60px 30px;
+      box-sizing: border-box;
+      backdrop-filter: blur(6px);
+      border: 2px solid rgba(255,255,255,0.06);
+      min-height: calc(100vh - 100px);
+      display: flex;
+      flex-direction: column;
+      
+      justify-content: space-between;
+    }
+    
+    .headline-link {
+        color: var(--accent);
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .headline {
+      font-family: "Cinzel", Georgia, serif;
+      color: var(--accent);
+      text-align: center;
+      margin: 0 0 36px 0;
+      font-size: clamp(42px, 7.2vw, 96px);
+      line-height: 1;
+      letter-spacing: 1px;
+      transform-origin: center;
+      animation: headline-bounce 2s cubic-bezier(.25,.9,.35,1) infinite;
+    }
+    @keyframes headline-bounce {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-13px); }
+      100% { transform: translateY(0); }
+    }
+    .actions-container { 
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; 
+    width: 100%;
+    max-width: 100%; 
+}
+    .action-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 30px; 
+      max-width: 560px; 
+      flex-shrink: 0; 
+      margin-left: 290px; }
+
+    .action {
+      width: 100%;
+      padding: 34px 28px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 18px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.6);
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+      user-select: none;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .action:focus,
+    .action:hover {
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.085);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.7);
+      outline: none;
+    }
+    .action .label {
+      font-family: "Cinzel", Georgia, serif;
+      font-size: clamp(20px, 3.6vw, 42px);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1.05;
+      pointer-events: none;
+    }
+    a.action { text-decoration: none; display: block; }
+    
+    .chef-bot-trigger {
+        text-decoration: none; 
+        flex-shrink: 0;
+        margin-left: 150px;
+    }
+    .chef-bot-bubble {
+      width: 250px; 
+    height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass);
+      border-radius: 90%;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .chef-bot-bubble:hover {
+        transform: scale(1.05) rotate(-3deg);
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 80px rgba(0,0,0,0.8);
+    }
+    .chef-bot-bubble img {
+        width: 100%;
+        height: 100%;
+        max-width: 160px;
+        max-height: 160px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+    }
+
+    .chat-column {
+        background: var(--chat-bg);
+        width: 420px;
+        height: 100%;
+        max-height: 600px; 
+        border-radius: 18px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        opacity: 0;
+        visibility: hidden;
+        transform: scaleY(0.95);
+        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        padding: 20px;
+        box-sizing: border-box;
+        margin-left: -120px;
+    }
+    .chat-column.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: scaleY(1);
+    }
+    
+    .chef-bot-trigger.hidden {
+        display: none;
+    }
+    .chat-header {
+        font-family: "Cinzel", serif;
+        font-size: 24px;
+        color: var(--accent);
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        white-space: pre-wrap; 
+    }
+    .chat-input-container {
+        display: flex;
+        gap: 10px;
+    }
+    .chat-input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        font-size: 16px;
+    }
+    .chat-input:focus {
+        outline: 2px solid var(--accent);
+        background: rgba(255,255,255,0.25);
+    }
+    .send-button {
+        background: var(--accent);
+        color: #111;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .send-button:hover {
+        background: #bfffe1;
+    }
+    .card-footer {
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 14px;
+      border-radius: 15px;
+    }
+    .card-footer .left,
+    .card-footer .right {
+      font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.3px;
+    }
+
+    .card-footer .left a,
+    .card-footer .right a {
+      color: #9fe9c7;
+      text-decoration: none;
+      margin-left: 4px;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+    .card-footer .left a:hover,
+    .card-footer .right a:hover {
+      color: #bfffe1;
+      text-shadow: 0 0 6px rgba(159,233,199,0.6);
+    }
+    .bottom-note {
+    width: 100vw; 
+    
+    text-align: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 64, 0.45);
+    color: #c9bfff;
+    font-family: "Cinzel", "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    backdrop-filter: blur(4px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    animation: fadeUp 1.6s ease forwards;
+    
+    white-space: normal; 
+    word-break: break-word; 
+}
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bottom-note a {
+      color: #b3e0ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .bottom-note a:hover {
+      color: #238e77;
+      text-shadow: 0 0 6px rgba(35, 138, 107, 0.8);
+    }
+    @media (max-width: 1200px){
+        .actions-container { gap: 60px; }
+        .chat-column { width: 350px; margin-left: -60px; max-height: 400px; }
+    }
+    @media (max-width: 1000px){
+        .actions-container { flex-direction: column; gap: 40px; }
+        
+        .chat-column { width: 90%; margin-left: 0; max-width: 500px; }
+        .action-stack { width: 100%; }
+        .chef-bot-bubble { 
+        width: 280px; 
+        height: 280px; 
+        align-self: center; 
+    }
+    }
+    @media (max-width: 1000px){
+    .actions-container { 
+        flex-direction: column; 
+        gap: 40px; 
+        padding: 0; 
+        justify-content: center;
+    }
+    
+    .action-stack { 
+        width: 100%; 
+        max-width: 450px; 
+        margin-left: 0; 
+        align-self: center;
+    }
+    
+    .chef-bot-trigger {
+        margin-left: 0; 
+        align-self: center;
+    }
+    
+    .chat-column { 
+        width: 90%; 
+        max-width: 400px; 
+        max-height: 400px;
+        margin-left: 0; 
+        align-self: center;
+    }
+    .chef-bot-bubble { 
+        width: 200px; 
+        height: 200px; 
+    }
+}@media (max-width: 600px){
+    .card { 
+        padding: 20px 15px 15px;
+        width: 96%; 
+    }
+    .headline {
+    margin-bottom: 20px;
+        font-size: clamp(36px, 10vw, 60px);
+    }
+    .action {
+        padding: 25px 15px;
+    }
+    .action .label {
+        font-size: 20px;
+    }
+    .chef-bot-bubble { 
+        width: 280px; 
+        height: 280px; 
+    }
+    .bottom-note {
+        font-size: 10px; 
+        padding: 5px 2px;
+        line-height: 1.4; 
+        white-space: normal; 
+        word-break: break-all; 
+        text-align: center;
+    }
+    .bottom-note a {
+        word-break: break-word; 
+        display: inline;
+    }
+    .card { 
+
+        padding: 20px 15px 15px; 
+                 width: 96%; 
+        min-height: calc(100vh - 40px);
+        height: calc(100vh - 40px);
+    }
+}
+   @media (max-width: 1000px){
+    .actions-container { 
+        flex-direction: column; 
+        gap: 40px; 
+        padding: 20px 0;
+        justify-content: center;
+    }
+  
+    .action-stack { 
+        width: 100%; 
+        max-width: 450px;
+        margin-left: 0;
+    }
+    
+    .chef-bot-trigger {
+        margin-left: 0; 
+    }
+    
+    .chef-bot-bubble { width: 280px; height: 280px; } 
+    .chat-column { 
+        width: 90%; 
+        max-width: 400px; 
+        max-height: 400px;
+        margin-left: 0; 
+    }
+}
+    @media (max-width: 860px){
+      .card { padding: 28px; }
+      .headline { margin-bottom: 22px; }
+      .chef-bot-bubble { width: 280px; height: 280px; }
+    }
+    .action:focus { box-shadow: 0 0 0 4px rgba(217,247,230,0.12); }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="overlay" aria-hidden="true"></div>
+  <div class="wrap" role="main">
+    <div class="card" role="region" aria-label="Eatlyst start page">
+      
+      <a href="javascript:window.location.reload();" class="headline-link">
+        <h1 class="headline">Eatlyst</h1>
+      </a>
+
+      <div class="actions-container" role="menu" aria-label="Choose an action or start chat">
+        
+        <div class="action-stack">
+          <a href="home.html" class="action" role="menuitem" aria-label="Open Recipe of the Day">
+            <div class="label">Recipe of the Day </div>
+          </a>
+          <a href="suggest.html" class="action" role="menuitem" aria-label="Open Suggest a Food">
+            <div class="label">Suggest a Food </div>
+          </a>
+        </div>
+        
+        <a href="#" id="chef-bot-trigger" class="chef-bot-trigger" role="button" aria-label="Start Chef Bot chat">
+            <div class="chef-bot-bubble">
+                <img src="chatbot-logo.png" alt="Chef Bot Logo - Frying Pan with Egg" aria-hidden="true">
+            </div>
+        </a>
+       <div id="chat-column" class="chat-column">
+    <div class="chat-header-container">
+        <div class="chat-header">👨‍🍳 Chef Bot</div>
+        <button id="close-chat-button" class="close-chat-button" aria-label="Close Chat">X</button>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages">
+        <p><strong>Chef Bot:</strong> Hello! I'm your culinary assistant. Ask me anything about food or cooking!</p>
+    </div>
+    
+    <div class="chat-input-container">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Ask your food question..." />
+        <button class="send-button" id="send-button">Send</button>
+    </div>
+</div>
+        
+
+      </div>
+      <div class="card-footer">
+        <div class="left">
+          Created By <a href="https://www.linkedin.com/in/pranavvkaul/" target="_blank" rel="noopener">Pranav Kaul</a>
+        </div>
+        <div class="right">
+          <a href="https://www.iiitd.ac.in/" target="_blank" rel="noopener">IIIT-Delhi</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note">
+This project was done as part of the
+<a href="https://techtree.iiitd.edu.in/viewDescription/filename?=BIO544" target="_blank"><strong>Computational Gastronomy (BIO544)</strong></a> 
+course, taught at 
+<a href="https://www.iiitd.ac.in" target="_blank"><strong>IIIT-Delhi</strong></a> 
+by 
+<a href="https://www.iiitd.ac.in/bagler" target="_blank"><strong>Prof. Ganesh Bagler</strong></a>.
+  </div>
+    
+  <script>
+    const CHAT_API_ENDPOINT = 'http://127.0.0.1:5000/api/chat';
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const trigger = document.getElementById('chef-bot-trigger');
+        const closeButton = document.getElementById('close-chat-button'); 
+        const bubble = document.getElementById('chef-bot-bubble');
+        const chatColumn = document.getElementById('chat-column');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            chatColumn.classList.add('visible');
+            bubble.classList.add('hidden');
+            chatInput.focus();
+        });
+        closeButton.addEventListener('click', () => {
+        window.location.reload();
+  });
+
+const appendMessage = (sender, text, isThinking = false) => {
+    const p = document.createElement('p');
+    let cleanedText = text.replace(/\*\*/g, ''); 
+    
+    cleanedText = cleanedText.replace(/(\d+\.\s+.*?)\*\*/g, '$1'); 
+    
+    const strong = document.createElement('strong');
+    strong.textContent = `${sender}: `;
+    p.appendChild(strong);
+
+    const textNode = document.createTextNode(cleanedText);
+    p.appendChild(textNode);
+    
+    if (isThinking) {
+        p.id = 'thinking-message';
+    }
+    
+    chatMessages.appendChild(p);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+};
+        
+        const sendMessage = async () => {
+            const userText = chatInput.value.trim();
+            if (userText === '') return;
+
+            appendMessage('You', userText);
+            chatInput.value = '';
+            sendButton.disabled = true;
+            appendMessage('Chef Bot', 'Thinking...', true);
+
+            try {
+                const response = await fetch(CHAT_API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ message: userText })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const botResponse = data.response; 
+
+                const thinkingMsg = document.getElementById('thinking-message');
+                if (thinkingMsg) {
+                    thinkingMsg.remove();
+                }
+
+                appendMessage('Chef Bot', botResponse);
+
+            } catch (error) {
+                console.error("Error communicating with Chef Bot API:", error);
+                
+                const thinkingMsg = document.getElementById('thinking-message');
+                if (thinkingMsg) {
+                    thinkingMsg.remove();
+                }
+
+                appendMessage('Chef Bot', ' Sorry, I ran into a technical issue. Please ensure the server is running.', false);
+            } finally {
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        };
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    });
+  </script>
+</body>
+</html>
