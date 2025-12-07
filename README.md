@@ -37,7 +37,7 @@ The application offers two primary features:
 | **Data Acquisition** | Python with `requests` and `BeautifulSoup`. Parses a local `sitemap_1.xml` (from allrecipes.com) to extract 26 recipe links for scraping. | allrecipes.com |
 | **Data Extracted** | Recipe Name, URL, Detailed Ingredients, Instructions, Prep Time, and Image URL. | Scraped data |
 | **Image Handling** | Extracted image links are used to **manually download and cache** images into the local `/images` folder, referenced in `recipedata.csv`. This prevents broken links if the source site changes. | Local `images/` folder |
-| **Nutritional Filtering** | Frontend JavaScript filters **39 food items** based on user-inputted min/max ranges for Cals, Carbs, Protein, and Fat. | fatsecret.co.in (external dataset) |
+| **Nutritional Filtering** | Frontend JavaScript filters **39 food items** based on user-inputted min/max ranges for Cals, Carbs, Protein, and Fat. | fatsecret.co.in/.za/.sg/.uk/.nz/.com |
 | **Frontend Data Use** | All CSV data (`recipedata.csv`, `nutritiondata.csv`) is converted to **JSON format** for fast, asynchronous loading in the HTML/JavaScript application. | JSON files |
 
 ---
@@ -110,7 +110,7 @@ The data used in this project was sourced from the following platforms:
 
 Recipe Data: allrecipes.com
 
-Nutritional Data: fatsecret.co.in
+Nutritional Data: fatsecret.co.in/.za/.sg/.uk/.nz/.com
 
 ---
 
