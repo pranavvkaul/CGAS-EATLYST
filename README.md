@@ -1,5 +1,4 @@
 # Eatlyst
----
 
 ## Project Structure
 
