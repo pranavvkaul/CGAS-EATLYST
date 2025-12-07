@@ -1,7 +1,7 @@
 # Eatlyst
 
 ## Project Structure
-
+ 
 ```
 CGAS-EATLYST/
 ├── index.html              # Landing page and primary navigation
