@@ -100,6 +100,18 @@ The frontend is a static site and requires no server to run.
 
 ---
 
+## Conclusion and Future Outlook
+
+The Eatlyst project successfully validated the application of Computational Gastronomy by achieving all defined core objectives. The system's Decoupled, Client-Side Architecture proved highly effective, ensuring the final application is fast, stable, and easily portable as a static file set. The core strength lies in the multi-constraint intersection filtering logic, which accurately identifies food items meeting strict, complex nutritional goals (Calories, Carbs, Protein, and Fat) simultaneously.
+
+Moving forward, the project is positioned for enhancement through:
+
+### 1. Scaling: Deploying the system on a cloud backend and enhancing the data size and variety.
+
+### 2. Intelligence: Integrating Machine Learning for personalized recommendations and incorporating a chatbot for user support.
+
+### 3. UX Improvement: Adding advanced features like visual analytics and user accounts.
+
 ## Acknowledgements
 
 This project was developed by **Pranav Kaul** as part of the **Computational Gastronomy (BIO544)** course, taught at **IIIT-Delhi** by **Prof. Ganesh Bagler**.
