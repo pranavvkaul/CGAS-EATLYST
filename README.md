@@ -20,7 +20,9 @@ CGAS-EATLYST/
 
 ## Project Description
 
-**Eatlyst** is an interactive web application developed as part of a Computational Gastronomy course (BIO544). The platform is designed to make healthy food discovery effortless and fun by leveraging scraped data and structured nutritional information.
+**Eatlyst** is an interactive web application developed as part of a Computational Gastronomy course (BIO544). The platform is designed to make healthy food discovery effortless and fun by leveraging scraped data and structured nutritional information. 
+
+The website is running on the link: https://pranavvkaul.github.io/CGAS-EATLYST/
 
 The application offers two primary features:
 
