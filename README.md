@@ -1,5 +1,5 @@
 # Eatlyst
-
+  
 ## Project Structure
  
 ```
